@@ -1,7 +1,7 @@
 {
   "name": "uuid-class",
   "version": "0.1.0",
-  "description": "A better UUID class for JavaScript",
+  "description": "A minimal UUID class for JavaScript",
   "main": "index.cjs",
   "module": "index.js",
   "type": "module",
@@ -34,10 +34,14 @@
   "bugs": {
     "url": "https://github.com/qwtel/uuid-class/issues"
   },
+  "engines": {
+    "node": ">=10"
+  },
   "keywords": [
     "uuid",
     "class",
     "uint8array",
+    "typedarray",
     "binary"
   ]
 }

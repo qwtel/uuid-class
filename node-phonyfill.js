@@ -6,17 +6,16 @@ import { randomBytes } from 'crypto';
 
 global.crypto = { 
   /** 
-   * A ponyfill for `getRandomValues`.
-   * **It does not conform to the WebCrypto specification!**
+   * A "phonyfill" for `getRandomValues`.
    * 
-   * Unlike a full polyfill, this implementation is faster as it avoids copying data. 
-   * But  still be slower than a native implement)
+   * It's is like a polyfill but **does not conform to the WebCrypto specification!**.
+   * Unlike a the [polyfill](./node-polyfill.js), this implementation is faster as it avoids copying data. 
    * 
    * Specifically, the provided typed array is not filled with random values, nor is it returned form the function.
    * Instead a new typed array of the same type and size is returned, which contains the random data.
    * 
-   * @param {TypedArray} typedArray A typed array used f
-   * @returns {TypedArray} A different
+   * @param {TypedArray} typedArray A typed array *used only* for specifying the type and size of the return value.
+   * @returns {TypedArray} A typed array of the same type and size as `typedArray` filled with random data.
    */
   getRandomValues(typedArray) {
     const { BYTES_PER_ELEMENT, length } = typedArray;

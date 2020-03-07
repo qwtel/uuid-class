@@ -1,25 +1,38 @@
 # UUID Class
 
-A UUID class for JavaScript.
+A minimal UUID class for JavaScript.
 
 UUIDs are represented as bytes (`Uint8Array`) and converted to strings on-demand.
 
 This class implements `toString` and `toJSON` for better language integration, as well as inspection for node and Deno for a better development experience.
 
-For the most part, `UUID` can be used where  UUID strings are used,
-except for equality checks[^1]. For those cases, `UUID` provides quick access to the string representations via the `uuid` field.
+For the most part, a `UUID` instance can be used where a UUID string is expected, except equality checks. 
+For those cases, `UUID` provides quick access to the string representations via the `uuid` field.
+
+## Dependencies
+The class is intended to be used in a variety of JS contexts, but expects the WebCryptography API to be implemented, specifically `crypto.getRandomValues`. It also expects `Uint8Array` and is written in ES2015 syntax and ES modules. However, it can be used in node via `require`. 
+When using `require`, make sure to use the `.cjs` extension for the polyfill!
+
+## Usage
 
 ```js
+import 'uuid-class/node-polyfill.js'; // node only
+// require('uuid-class/node-polyfill.cjs');
+
+import { UUID } from 'uuid-class';
+// const { UUID } = require('uuid-class');
+
 // Create new random UUID
-let u = new UUID() = UUID.v4();
+let u = new UUID();
+let v = UUID.v4();
 
 assert.ok(u instanceof Uint8Array);
 assert.equal(u.length, 16);
 assert.equal(u.byteLength, 16);
 
-// Create from UUID string
-let s = new UUID('95fb587f-4911-4aeb-b6bb-464b2b617e2c') 
-      = UUID.fromString('95fb587f-4911-4aeb-b6bb-464b2b617e2c');
+// Create from string
+let r = new UUID('95fb587f-4911-4aeb-b6bb-464b2b617e2c');
+let s = UUID.fromString('95fb587f-4911-4aeb-b6bb-464b2b617e2c');
 
 // Can access UUID byte-wise
 assert.equal(s[0], 0x95);
