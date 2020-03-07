@@ -49,5 +49,3 @@ assert.equal(JSON.stringify({ s }), `{"s":"95fb587f-4911-4aeb-b6bb-464b2b617e2c"
 // In node and deno prints as the type and the uuid string
 console.log(s) // UUID [ 95fb587f-4911-4aeb-b6bb-464b2b617e2c ]
 ```
-
-[^1]: This is because JavaScript doesn't support value types.

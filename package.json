@@ -10,6 +10,14 @@
     "*.cjs"
   ],
   "exports": {
+    "./polyfill": {
+      "import": "./node-polyfill.js",
+      "require": "./node-polyfill.cjs"
+    },
+    "./phonyfill": {
+      "import": "./node-phonyfill.js",
+      "require": "./node-phonyfill.cjs"
+    },
     ".": {
       "import": "./index.js",
       "require": "./index.cjs"
@@ -17,12 +25,15 @@
   },
   "scripts": {
     "test": "node test/test.js",
-    "build": "node scripts/build.js"
+    "build": "scripts/build.js index.js node-polyfill.js node-phonyfill.js",
+    "prepack": "npm run build"
   },
   "author": "Florian Klampfer <mail@qwtel.com> (https://qwtel.com/)",
   "license": "MIT",
   "devDependencies": {},
-  "dependencies": {},
+  "dependencies": {
+    "node-get-random-values": "^1.0.0"
+  },
   "directories": {
     "test": "test"
   },
