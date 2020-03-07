@@ -62,7 +62,6 @@ export class UUID extends Uint8Array {
   }
 
   /**
-   * 
    * @param {string} value 
    */
   static fromString(value) {
@@ -96,7 +95,7 @@ export class UUID extends Uint8Array {
   /**
    * Quick access to the string representation for easier comparison.
    * Too bad JS doesn't support value types...
-   * @example if (myUUID.id === otherUUID.id) { ... }
+   * @example if (myUUID.uuid === otherUUID.uuid) { ... }
    */
   get uuid() {
     return _bytesToUUIDString(this);

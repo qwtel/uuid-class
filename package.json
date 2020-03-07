@@ -30,5 +30,14 @@
     "type": "git",
     "url": "git+https://github.com/qwtel/uuid-class.git"
   },
-  "homepage": "https://github.com/qwtel/uuid-class#readme"
+  "homepage": "https://github.com/qwtel/uuid-class#readme",
+  "bugs": {
+    "url": "https://github.com/qwtel/uuid-class/issues"
+  },
+  "keywords": [
+    "uuid",
+    "class",
+    "uint8array",
+    "binary"
+  ]
 }
