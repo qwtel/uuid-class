@@ -1,6 +1,8 @@
 // Better inspection for node and deno.
 const nodeInspect = Symbol.for('nodejs.util.inspect.custom');
-const denoInspect = typeof Deno !== 'undefined' ? 'symbols' in Deno ? Deno.symbols.customInspect : Deno.customInspect : Symbol();
+const denoInspect = typeof Deno !== 'undefined' 
+  ? 'symbols' in Deno ? Deno.symbols.customInspect : Deno.customInspect 
+  : Symbol();
 
 const byteToHex = byte => byte.toString(16).padStart(2, '0');
 const hexToByte = hex => parseInt(hex, 16);
@@ -38,9 +40,7 @@ function _fromString(str) {
   return _hexStringToBytes(hex);
 }
 
-/** 
- * @typedef {Int8Array|Uint8Array|Uint8ClampedArray|Int16Array|Uint16Array|Int32Array|Uint32Array|Float32Array|Float64Array} TypedArray
- */
+ const _uint8Array = new WeakMap();
 
 /**
  * A better UUID class for JavaScript.
@@ -49,11 +49,14 @@ function _fromString(str) {
  * 
  * This class implements `toString` and `toJSON` for better language integration,
  * as well as inspection for node and Deno for a better development experience.
+ * 
  * For the most part, `UUID` can be used where  UUID strings are used,
  * except for equality checks. For those cases, `UUID` provides quick access 
  * to the string representations via the `uuid` field.
+ * 
+ * @extends ArrayBufferView
  */
-export class UUID extends Uint8Array {
+export class UUID {
   /**
    * Generate a new UUID version 4 (random).
    */
@@ -69,27 +72,56 @@ export class UUID extends Uint8Array {
   }
 
   /**
-   * @param {string|number|ArrayLike<number>|ArrayBuffer|TypedArray} [value] 
-   * @param {number} [byteOffset] When `value` is an `ArrayBuffer`, can specify and offset in bytes from where to read.
+   * @param {string|ArrayLike<number>|ArrayBufferLike} [value] 
+   *  Value from which to create this UUID. Leave empty to create a random (v4) UUID
+   * @param {number} [byteOffset] 
+   *  When `value` is an `ArrayBuffer`, can specify and offset in bytes from where to read.
    */
-  constructor(value, byteOffset) {
+  constructor(value, byteOffset = 0) {
     if (value == null) {
-      super(_v4());
-    } else if (typeof value === 'string') {
-      super(_fromString(value))
-    } else if (typeof value === 'number') {
-      super(16); // NOTE: Accepts a number, but length is always 16 bytes.
-    } else if (value instanceof ArrayBuffer) {
-      if (value.byteLength - (byteOffset || 0) < 16) throw Error('UUID too short');
-      super(value, byteOffset, 16);
-    } else if ('length' in value) {
+      _uint8Array.set(this, new Uint8Array(_v4()));
+    }
+    else if (typeof value === 'string') {
+      _uint8Array.set(this, new Uint8Array(_fromString(value)));
+    }
+    else if (value instanceof UUID) {
+      _uint8Array.set(this, new Uint8Array(value.buffer.slice(0)));
+    }
+    else if (value instanceof ArrayBuffer) {
+      if (value.byteLength - byteOffset < 16) throw Error('UUID too short');
+      _uint8Array.set(this, new Uint8Array(value.slice(byteOffset, byteOffset + 16)));
+    }
+    else if ('length' in value) {
       const { length } = value;
       if (length < 16) throw Error('UUID too short');
-      if (length === 16) super(value);
-      else super(Array.prototype.slice.call(value, 0, 16));
-    } else {
+      if (length === 16) _uint8Array.set(this, new Uint8Array(value));
+      else if ('slice' in value) _uint8Array.set(this, new Uint8Array(value.slice(0, 16)));
+      else _uint8Array.set(this, new Uint8Array(Array.prototype.slice.call(value, 0, 16)));
+    }
+    else {
       throw Error('Unsupported data type');
     }
+  }
+
+  /**
+   * @returns {ArrayBufferLike}
+   */
+  get buffer() {
+    return _uint8Array.get(this).buffer;
+  }
+
+  /**
+   * @returns {number}
+   */
+  get byteLength() {
+    return 16;
+  }
+
+  /**
+   * @returns {number}
+   */
+  get byteOffset() {
+    return 0;
   }
 
   /**
@@ -98,15 +130,15 @@ export class UUID extends Uint8Array {
    * @example if (myUUID.uuid === otherUUID.uuid) { ... }
    */
   get uuid() {
-    return _bytesToUUIDString(this);
+    return _bytesToUUIDString(_uint8Array.get(this));
   }
 
   toString() {
-    return _bytesToUUIDString(this);
+    return _bytesToUUIDString(_uint8Array.get(this));
   }
 
   toJSON() {
-    return _bytesToUUIDString(this);
+    return _bytesToUUIDString(_uint8Array.get(this));
   }
 
   [nodeInspect]() {
