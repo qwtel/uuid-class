@@ -70,13 +70,6 @@ export class UUID {
   }
 
   /**
-   * @param {string} value 
-   */
-  static fromString(value) {
-    return new UUID(_fromString(value));
-  }
-
-  /**
    * @param {string|ArrayLike<number>|ArrayBufferLike} [value] 
    *  Value from which to create this UUID. Leave empty to create a random (v4) UUID
    * @param {number} [byteOffset] 
@@ -109,6 +102,7 @@ export class UUID {
   }
 
   /**
+   * The ArrayBuffer instance referenced by the array.
    * @returns {ArrayBufferLike}
    */
   get buffer() {
@@ -116,6 +110,7 @@ export class UUID {
   }
 
   /**
+   * The length in bytes of the array.
    * @returns {number}
    */
   get byteLength() {
@@ -123,6 +118,7 @@ export class UUID {
   }
 
   /**
+   * The offset in bytes of the array.
    * @returns {number}
    */
   get byteOffset() {
@@ -131,7 +127,6 @@ export class UUID {
 
   /**
    * Quick access to the string representation for easier comparison.
-   * Too bad JS doesn't support value types...
    * @example if (myUUID.uuid === otherUUID.uuid) { ... }
    */
   get uuid() {
