@@ -1,5 +1,3 @@
-import './global-this.js';
-
 // Better inspection for node and deno.
 const nodeInspect = Symbol.for('nodejs.util.inspect.custom');
 
@@ -30,7 +28,7 @@ function _bytesToUUIDString(uint8Array) {
 }
 
 function _v4() {
-  const uuid = globalThis.crypto.getRandomValues(new Uint8Array(16));
+  const uuid = crypto.getRandomValues(new Uint8Array(16));
 
   // Per 4.4, set bits for version and `clock_seq_hi_and_reserved`
   uuid[6] = (uuid[6] & 0x0f) | 0x40;
