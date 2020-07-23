@@ -7,7 +7,8 @@
   "type": "module",
   "files": [
     "*.js",
-    "*.cjs"
+    "*.cjs",
+    "*.d.ts*"
   ],
   "exports": {
     "./polyfill": {
@@ -25,12 +26,16 @@
   },
   "scripts": {
     "test": "node test/test.js",
-    "build": "scripts/build.js index.js node-polyfill.js node-phonyfill.js",
+    "build": "npm run build:cjs && npm run build:dts",
+    "build:cjs": "scripts/build.js index.js node-polyfill.js node-phonyfill.js",
+    "build:dts": "tsc -d",
     "prepack": "npm run build"
   },
   "author": "Florian Klampfer <mail@qwtel.com> (https://qwtel.com/)",
   "license": "MIT",
-  "devDependencies": {},
+  "devDependencies": {
+    "typescript": "^3.9.7"
+  },
   "dependencies": {
     "node-get-random-values": "^1.0.0"
   },
