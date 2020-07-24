@@ -26,7 +26,8 @@
   },
   "scripts": {
     "test": "node test/test.js",
-    "build": "npm run build:cjs && npm run build:dts",
+    "copy": "cp docs/README.md README.md && cp docs/LICENSE.md LICENSE.md",
+    "build": "npm run build:cjs && npm run build:dts && npm run copy",
     "build:cjs": "scripts/build.js index.js node-polyfill.js node-phonyfill.js",
     "build:dts": "tsc -d",
     "prepack": "npm run build"
