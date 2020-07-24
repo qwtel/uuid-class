@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## v0.6.0
+* Create npm-publish.yml
+
 ## v0.5.0
 * Fix scripts
 
