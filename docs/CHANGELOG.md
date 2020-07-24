@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## v0.5.0
+* Fix scripts
+
 ## v0.4.0
 * Update docs
 * Add copy to scripts
