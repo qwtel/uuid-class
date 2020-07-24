@@ -1,8 +1,15 @@
 # CHANGELOG
 
+## v0.4.0
+* Update docs
+* Add copy to scripts
+* Copy license to root
+* Fix cf mail protect
+* Fix dl link
+
 ## v0.3.0
 * Add docs folder
-* Don't force globalThis
+* Don't force `globalThis`
 
 ## v0.2.0
 * Remove redundant `fromString` method
