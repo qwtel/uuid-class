@@ -25,11 +25,12 @@
     }
   },
   "scripts": {
+    "clean": "rm *.cjs *.d.ts*",
     "test": "node test/test.js",
     "copy": "cp docs/README.md README.md && cp docs/LICENSE.md LICENSE.md",
     "sed": "sed -i '' -E \"s/$npm_package_name-[0-9]+\\.[0-9]+\\.[0-9]+/$npm_package_name-$npm_package_version/g\" docs/_config.yml",
     "build": "npm run build:cjs && npm run build:dts",
-    "build:cjs": "scripts/build.js index.js node-polyfill.js node-phonyfill.js",
+    "build:cjs": "for f in *.js; do babel $f --plugins=@babel/plugin-transform-modules-commonjs > \"${f%.js}.cjs\"; done",
     "build:dts": "tsc -d",
     "version": "npm run copy && npm run sed && git add .",
     "prepack": "npm run build"
@@ -37,6 +38,9 @@
   "author": "Florian Klampfer <mail@qwtel.com> (https://qwtel.com/)",
   "license": "MIT",
   "devDependencies": {
+    "@babel/cli": "^7.10.5",
+    "@babel/core": "^7.11.0",
+    "@babel/plugin-transform-modules-commonjs": "^7.10.4",
     "typescript": "^3.9.7"
   },
   "dependencies": {

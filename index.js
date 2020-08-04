@@ -10,7 +10,7 @@ const denoInspect = typeof Deno !== 'undefined'
 const byteToHex = byte => byte.toString(16).padStart(2, '0');
 const hexToByte = hex => parseInt(hex, 16);
 
-const _hexStringToBytes = hex => hex.match(/[0-9A-Za-z]{1,2}/g).map(hexToByte);
+const _hexStringToBytes = hex => hex.match(/[0-9A-Fa-f]{1,2}/g).map(hexToByte);
 
 function _bytesToHexArray(uint8Array) {
   const hexArray = new Array(16);
