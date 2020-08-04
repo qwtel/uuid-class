@@ -55,7 +55,7 @@ function _fromString(str) {
  * 
  * For the most part, `UUID` can be used where  UUID strings are used,
  * except for equality checks. For those cases, `UUID` provides quick access 
- * to the string representations via the `uuid` field.
+ * to the string representations via the `id` field.
  * 
  * @extends ArrayBufferView
  */
@@ -121,6 +121,14 @@ export class UUID {
    */
   get byteOffset() {
     return 0;
+  }
+
+  /**
+   * Quick access to the string representation for easier comparison.
+   * @example if (myUUID.uuid === otherUUID.uuid) { ... }
+   */
+  get id() {
+    return _bytesToUUIDString(_uint8Array.get(this));
   }
 
   /**
