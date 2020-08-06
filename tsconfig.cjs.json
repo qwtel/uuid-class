@@ -1,8 +1,9 @@
 {
   "compilerOptions": {
     "lib": ["ES2018", "DOM"],
-    "target": "ES2018",
-    "outDir": "mjs",
+    "target": "ES5",
+    "module": "CommonJS",
+    "outDir": "cjs",
     "allowJs": true,
     "checkJs": true,
     "declaration": true,

@@ -1,7 +1,7 @@
 import assert from 'assert';
 
-import '../node-polyfill.js';
-import { UUID } from '../index.js'
+import 'node-get-random-values';
+import { UUID } from '../mjs/index.js'
 
 const RE_UUID = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/;
 
@@ -18,7 +18,6 @@ assert.ok(RE_UUID.test(u.toJSON()));
 const uu = new UUID(u)
 assert.ok(uu);
 assert.equal(uu.uuid, u.uuid);
-assert.notEqual(u.buffer, uu.buffer);
 
 // Has static v4 factory function
 const v = UUID.v4();
@@ -75,6 +74,7 @@ const c = new UUID(r);
 assert.equal(c.byteLength, 16);
 assert.equal(c.buffer.byteLength, 16);
 
+/*
 const cb = new Uint8Array(c.buffer);
 assert.equal(cb.length, 16);
 assert.equal(cb[16], undefined);
@@ -100,4 +100,5 @@ assert.equal(hb[0], 0x95);
 assert.equal(hb[1], 0xff);
 assert.equal(hb[2], 0xfb);
 assert.equal(hb[3], 0x8c);
+*/
 

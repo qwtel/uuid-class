@@ -1,5 +1,7 @@
 node_modules
-playground
 *.tgz
-*.cjs
-*.d.ts*
+/playground
+/cjs
+/mjs
+/dist
+/index*
