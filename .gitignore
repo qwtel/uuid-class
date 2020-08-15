@@ -3,6 +3,5 @@ node_modules
 /playground
 /cjs
 /mjs
-/umd
 /module
 /index*

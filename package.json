@@ -2,7 +2,7 @@
   "name": "uuid-class",
   "version": "0.6.0",
   "description": "A minimal UUID class for JavaScript",
-  "main": "umd/index.js",
+  "main": "cjs/index.js",
   "module": "index.js",
   "type": "module",
   "files": [
@@ -10,7 +10,6 @@
     "index.d.ts",
     "*.map",
     "cjs",
-    "dist",
     "module"
   ],
   "exports": {
@@ -20,7 +19,7 @@
     }
   },
   "scripts": {
-    "clean": "rm -rf mjs cjs umd module index*",
+    "clean": "rm -rf mjs cjs module index*",
     "pretest": "npm run build:mjs",
     "test": "node test/test.js",
     "copy": "cp docs/README.md README.md && cp docs/LICENSE.md LICENSE.md",
@@ -40,10 +39,7 @@
   "devDependencies": {
     "node-get-random-values": "^1.1.0",
     "rollup": "^2.25.0",
-    "rollup-plugin-commonjs": "^10.1.0",
-    "rollup-plugin-node-resolve": "^5.2.0",
     "rollup-plugin-terser": "^6.1.0",
-    "rollup-plugin-uglify": "^6.0.4",
     "typescript": "^3.9.7"
   },
   "directories": {
