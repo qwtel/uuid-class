@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## v0.8.0
+- Remove garbage
+
 ## v0.7.0
 - Compile w/ babel
 - Update deps

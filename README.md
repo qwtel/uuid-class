@@ -12,4 +12,4 @@ For those cases, `UUID` provides quick access to the string representations via 
 ## Dependencies
 The class is intended to be used in a variety of JS contexts, but expects the WebCryptography API to be implemented, specifically `crypto.getRandomValues`. It also expects `Uint8Array` to be available. 
 
-~~It is written in ES2015 syntax and ES modules. However, it can be used in node via `require`.~~
+It is written in ES2015 syntax and ES modules. However, it can be used in node via `require`.
