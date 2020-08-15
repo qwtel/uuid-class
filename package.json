@@ -15,7 +15,6 @@
   "scripts": {
     "clean": "rm -rf mjs cjs module index*",
     "pretest": "npm run build:mjs",
-    "install": "cd node_modules/.bin; for f in ../../.bin/*.js; do ln -sf $f $(basename $f); done",
     "test": "node test/test.js",
     "copy": "cp docs/README.md README.md && cp docs/LICENSE.md LICENSE.md",
     "sed": "sed -i '' -E \"s/$npm_package_name-[0-9]+\\.[0-9]+\\.[0-9]+/$npm_package_name-$npm_package_version/g\" docs/_config.yml",
@@ -23,8 +22,8 @@
     "build:mjs": "tsc -d -p tsconfig.json",
     "build:cjs": "tsc -d -p tsconfig.cjs.json",
     "build:dist": "rollup -c",
-    "changelog:head": "echo \"\\n\\n## v$npm_package_version\" | after.js 'CHANGELOG' docs/CHANGELOG.md",
-    "changelog:list": "git log v$npm_package_version..HEAD --pretty=format:'- %s' --reverse | after.js 'CHANGELOG' docs/CHANGELOG.md",
+    "changelog:head": "echo \"\\n\\n## v$npm_package_version\" | bin/after.js 'CHANGELOG' docs/CHANGELOG.md",
+    "changelog:list": "git log v$npm_package_version..HEAD --pretty=format:'- %s' --reverse | bin/after.js 'CHANGELOG' docs/CHANGELOG.md",
     "preversion": "npm run changelog:list",
     "version": "npm run changelog:head && npm run copy && npm run sed && git add .",
     "prepack": "npm run clean && npm run build"
