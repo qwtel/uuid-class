@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## v0.7.0
+- Compile w/ babel
+- Update deps
+- Add .id getter
+- WIP
+- Fix
+- Make subclass of Uint8Array
+- Update
+- Add scripts
+
 ## v0.6.0
 * Create npm-publish.yml
 
