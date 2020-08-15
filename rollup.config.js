@@ -7,7 +7,7 @@ export default [
   {
     input: 'cjs/index.cjs',
     output: {
-      file: `dist/index.js`,
+      file: `umd/index.js`,
       format: 'umd',
       name: 'base64Encoding',
       sourcemap: true
@@ -21,7 +21,7 @@ export default [
   {
     input: 'index.js',
     output: {
-      file: `dist/module.js`,
+      file: `module/index.js`,
       format: 'es',
       sourcemap: true
     },

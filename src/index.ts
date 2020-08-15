@@ -2,9 +2,9 @@
 const nodeInspect = Symbol.for('nodejs.util.inspect.custom');
 
 // @ts-ignore
-const denoInspect = typeof Deno !== 'undefined' 
+const denoInspect = typeof Deno !== 'undefined'
   // @ts-ignore
-  ? 'symbols' in Deno ? Deno.symbols.customInspect : Deno.customInspect 
+  ? 'symbols' in Deno ? Deno.symbols.customInspect : Deno.customInspect
   : Symbol();
 
 const byteToHex = (byte: number) => byte.toString(16).padStart(2, '0');
@@ -20,8 +20,8 @@ function _bytesToHexArray(uint8Array: Uint8Array) {
 
 function _bytesToUUIDString(uint8Array: Uint8Array) {
   const hexArray = _bytesToHexArray(uint8Array);
-  hexArray.splice( 4, 0, '-');
-  hexArray.splice( 7, 0, '-');
+  hexArray.splice(4, 0, '-');
+  hexArray.splice(7, 0, '-');
   hexArray.splice(10, 0, '-');
   hexArray.splice(13, 0, '-');
   return hexArray.join('');
@@ -56,31 +56,29 @@ function _fromString(str: string) {
 }
 
 const _uint8Array = new WeakMap<UUID, Uint8Array>();
-const _byteOffset = new WeakMap<UUID, number>();
 
 function stringToBytes(str: string) {
   str = unescape(encodeURIComponent(str)); // UTF8 escape
   return new TextEncoder().encode(str).buffer;
 }
 
-async function _v5(value: string|BufferSource, namespace: string|UUID) {
+async function _v5(value: string | BufferSource, namespace: string | UUID) {
   const valueBytes = typeof value === 'string'
     ? stringToBytes(value)
     : value instanceof ArrayBuffer
-      ? value 
+      ? value
       : value.buffer;
 
   const namespaceUUID = typeof namespace === 'string'
     ? new UUID(namespace)
     : namespace
 
-  
   const hashBytes = await crypto.subtle.digest('SHA-1', _concatArrayBuffers(namespaceUUID.buffer, valueBytes));
 
   hashBytes[6] = (hashBytes[6] & 0x0f) | 0x50; // version
   hashBytes[8] = (hashBytes[8] & 0x3f) | 0x80;
 
-  return hashBytes;
+  return hashBytes.slice(0, 16);
 }
 
 /**
@@ -103,7 +101,7 @@ export class UUID implements ArrayBufferView {
     return new UUID(_v4());
   }
 
-  static async v5(value: string|BufferSource, namespace: string|UUID) {
+  static async v5(value: string | BufferSource, namespace: string | UUID) {
     return new UUID(await _v5(value, namespace));
   }
 
@@ -126,7 +124,7 @@ export class UUID implements ArrayBufferView {
   /**
    * Create a new UUID from the provided array-like structure.
    */
-  constructor(value: ArrayLike<number>|ArrayBuffer|SharedArrayBuffer);
+  constructor(value: ArrayLike<number> | ArrayBuffer | SharedArrayBuffer);
   /**
    * 
    */
@@ -134,15 +132,12 @@ export class UUID implements ArrayBufferView {
   constructor(value?: any, byteOffset: number = 0) {
     if (value == null) {
       _uint8Array.set(this, new Uint8Array(_v4()));
-      _byteOffset.set(this, 0);
     }
     else if (typeof value === 'string') {
       _uint8Array.set(this, new Uint8Array(_fromString(value)));
-      _byteOffset.set(this, 0);
     }
     else if (value instanceof UUID) {
       _uint8Array.set(this, new Uint8Array(value.buffer));
-      _byteOffset.set(this, value.byteOffset);
     }
     else if (typeof value[Symbol.iterator] === 'function') {
       if (typeof value.length === 'number') {
@@ -152,12 +147,10 @@ export class UUID implements ArrayBufferView {
         for (let i = 0; i < 16; i++) if (iter.next().done) throw Error('UUID too short');
       }
       _uint8Array.set(this, new Uint8Array(value));
-      _byteOffset.set(this, 0);
     }
-    else if (value instanceof ArrayBuffer && byteOffset > 0) {
+    else if (value instanceof ArrayBuffer) {
       if (value.byteLength - byteOffset < 16) throw Error('UUID too short');
       _uint8Array.set(this, new Uint8Array(value, byteOffset, byteOffset + 16));
-      _byteOffset.set(this, byteOffset);
     }
     else if ('length' in value) {
       const v = value as ArrayLike<number>

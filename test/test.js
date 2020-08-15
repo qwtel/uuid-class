@@ -1,7 +1,7 @@
 import assert from 'assert';
 
 import 'node-get-random-values';
-import { UUID } from '../mjs/index.js'
+import { UUID } from '../index.js'
 
 const RE_UUID = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/;
 
