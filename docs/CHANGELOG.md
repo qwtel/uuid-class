@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## v0.9.0
+- Remove github packages
+- Revert bin script
+- Revert "Remove garbage"
+
 ## v0.8.0
 - Remove garbage
 
