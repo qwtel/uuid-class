@@ -2,7 +2,7 @@
 const nodeInspect = Symbol.for('nodejs.util.inspect.custom');
 
 // @ts-ignore
-const denoInspect = typeof Deno !== 'undefined'
+const denoInspect: symbol = typeof Deno !== 'undefined'
   // @ts-ignore
   ? 'symbols' in Deno ? Deno.symbols.customInspect : Deno.customInspect
   : Symbol();
@@ -20,15 +20,11 @@ function _bytesToHexArray(uint8Array: Uint8Array) {
 
 function _bytesToUUIDString(uint8Array: Uint8Array) {
   const hexArray = _bytesToHexArray(uint8Array);
-  hexArray.splice(4, 0, '-');
-  hexArray.splice(7, 0, '-');
-  hexArray.splice(10, 0, '-');
-  hexArray.splice(13, 0, '-');
+  for (const i of [4, 7, 10, 13]) hexArray.splice(i, 0, '-');
   return hexArray.join('');
 }
 
-function _concatArrayBuffers(...abs: ArrayBuffer[]) {
-  const u8s = abs.map(a => new Uint8Array(a));
+function _concatUint8Arrays(...u8s: Uint8Array[]) {
   const size = u8s.reduce((size, u8) => size + u8.length, 0);
   const res = new Uint8Array(size);
   let i = 0;
@@ -55,8 +51,6 @@ function _fromString(str: string) {
   return _hexStringToBytes(hex);
 }
 
-const _uint8Array = new WeakMap<UUID, Uint8Array>();
-
 function stringToBytes(str: string) {
   str = unescape(encodeURIComponent(str)); // UTF8 escape
   return new TextEncoder().encode(str).buffer;
@@ -64,16 +58,16 @@ function stringToBytes(str: string) {
 
 async function _v5(value: string | BufferSource, namespace: string | UUID) {
   const valueBytes = typeof value === 'string'
-    ? stringToBytes(value)
+    ? new Uint8Array(stringToBytes(value))
     : value instanceof ArrayBuffer
-      ? value
-      : value.buffer;
+      ? new Uint8Array(value)
+      : new Uint8Array(value.buffer, value.byteOffset, value.byteLength);
 
   const namespaceUUID = typeof namespace === 'string'
     ? new UUID(namespace)
     : namespace
 
-  const hashBytes = await crypto.subtle.digest('SHA-1', _concatArrayBuffers(namespaceUUID.buffer, valueBytes));
+  const hashBytes = await crypto.subtle.digest('SHA-1', _concatUint8Arrays(namespaceUUID, valueBytes));
 
   hashBytes[6] = (hashBytes[6] & 0x0f) | 0x50; // version
   hashBytes[8] = (hashBytes[8] & 0x3f) | 0x80;
@@ -93,20 +87,32 @@ async function _v5(value: string | BufferSource, namespace: string | UUID) {
  * except for equality checks. For those cases, `UUID` provides quick access 
  * to the string representations via the `id` field.
  */
-export class UUID implements ArrayBufferView {
+export class UUID extends Uint8Array {
   /**
    * Generate a new UUID version 4 (random).
+   * 
+   * __Note that `crypto.getRandomValues` needs to be available in the global JS object!__
    */
   static v4() {
     return new UUID(_v4());
   }
 
+  /**
+   * Generated a new UUID version 5 (hashed)
+   * 
+   * __Note that `crypto.subtle` needs to be available in the global JS object (Not the case on non-HTTPS sites)!__
+   * 
+   * @param value 
+   * @param namespace 
+   */
   static async v5(value: string | BufferSource, namespace: string | UUID) {
     return new UUID(await _v5(value, namespace));
   }
 
   /**
-   * Create a new random (v4) UUID.
+   * Generate a new UUID version 4 (random).
+   * 
+   * __Note that `crypto.getRandomValues` needs to be available in the global JS object!__
    */
   constructor();
   /**
@@ -118,7 +124,7 @@ export class UUID implements ArrayBufferView {
    */
   constructor(value: UUID);
   /**
-   * 
+   * Create a UUID from the provided iterable, where every value will be interpreted as a unsigned 8 bit integer.
    */
   constructor(value: Iterable<number>);
   /**
@@ -126,61 +132,21 @@ export class UUID implements ArrayBufferView {
    */
   constructor(value: ArrayLike<number> | ArrayBuffer | SharedArrayBuffer);
   /**
-   * 
+   * Creates a UUID from the arry buffer using 16 bytes started from the provided offset.
    */
   constructor(value: ArrayBufferLike, byteOffset: number);
-  constructor(value?: any, byteOffset: number = 0) {
+  constructor(value?: any, byteOffset?: number) {
     if (value == null) {
-      _uint8Array.set(this, new Uint8Array(_v4()));
+      super(new Uint8Array(_v4()));
+    } else if (typeof value === 'string') {
+      super(new Uint8Array(_fromString(value)));
+    } else if (value instanceof UUID) {
+      super(new Uint8Array(value.buffer));
+    } else {
+      const x = new Uint8Array(value, byteOffset, 16).slice(0, 16);
+      if (x.length < 16) throw Error('UUID too short')
+      super(x.buffer);
     }
-    else if (typeof value === 'string') {
-      _uint8Array.set(this, new Uint8Array(_fromString(value)));
-    }
-    else if (value instanceof UUID) {
-      _uint8Array.set(this, new Uint8Array(value.buffer));
-    }
-    else if (typeof value[Symbol.iterator] === 'function') {
-      if (typeof value.length === 'number') {
-        if (value.length < 16) throw Error('UUID too short')
-      } else {
-        const iter = (value as Iterable<number>)[Symbol.iterator]();
-        for (let i = 0; i < 16; i++) if (iter.next().done) throw Error('UUID too short');
-      }
-      _uint8Array.set(this, new Uint8Array(value));
-    }
-    else if (value instanceof ArrayBuffer) {
-      if (value.byteLength - byteOffset < 16) throw Error('UUID too short');
-      _uint8Array.set(this, new Uint8Array(value, byteOffset, byteOffset + 16));
-    }
-    else if ('length' in value) {
-      const v = value as ArrayLike<number>
-      if (v.length < 16) throw Error('UUID too short');
-      _uint8Array.set(this, new Uint8Array(v));
-    }
-    else {
-      throw Error('Unsupported data type');
-    }
-  }
-
-  /**
-   * The ArrayBuffer instance referenced by the array.
-   */
-  get buffer() {
-    return _uint8Array.get(this).buffer;
-  }
-
-  /**
-   * The length in bytes of the array.
-   */
-  get byteLength() {
-    return 16;
-  }
-
-  /**
-   * The offset in bytes of the array.
-   */
-  get byteOffset() {
-    return 0;
   }
 
   /**
@@ -188,23 +154,23 @@ export class UUID implements ArrayBufferView {
    * @example if (myUUID.id === otherUUID.id) { ... }
    */
   get id() {
-    return _bytesToUUIDString(_uint8Array.get(this));
+    return _bytesToUUIDString(this);
   }
 
   /**
-   * Quick access to the string representation for easier comparison.
+   * Quick access to the UUID string representation for easier comparison.
    * @example if (myUUID.uuid === otherUUID.uuid) { ... }
    */
   get uuid() {
-    return _bytesToUUIDString(_uint8Array.get(this));
+    return _bytesToUUIDString(this);
   }
 
   toString() {
-    return _bytesToUUIDString(_uint8Array.get(this));
+    return _bytesToUUIDString(this);
   }
 
   toJSON() {
-    return _bytesToUUIDString(_uint8Array.get(this));
+    return _bytesToUUIDString(this);
   }
 
   [nodeInspect]() {

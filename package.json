@@ -21,6 +21,7 @@
   },
   "scripts": {
     "clean": "rm -rf mjs cjs umd module index*",
+    "pretest": "npm run build:mjs",
     "test": "node test/test.js",
     "copy": "cp docs/README.md README.md && cp docs/LICENSE.md LICENSE.md",
     "sed": "sed -i '' -E \"s/$npm_package_name-[0-9]+\\.[0-9]+\\.[0-9]+/$npm_package_name-$npm_package_version/g\" docs/_config.yml",

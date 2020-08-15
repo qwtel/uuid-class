@@ -7,6 +7,7 @@ const RE_UUID = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/;
 
 const u = new UUID();
 assert.ok(u);
+assert.ok(u instanceof Uint8Array);
 assert.ok(u.buffer instanceof ArrayBuffer);
 assert.equal(u.byteLength, 16);
 assert.ok(RE_UUID.test(u));
@@ -66,7 +67,7 @@ const a = new UUID('95fb587f49114aebb6bb464b2b617e2c6593210206284c1394dd331c2ca4
 assert.ok(a);
 assert.equal(a.uuid, '95fb587f-4911-4aeb-b6bb-464b2b617e2c');
 assert.equal(a.byteLength, 16);
-// assert.equal(a.length, 16);
+assert.equal(a.length, 16);
 
 // Also accepts more than 16 bytes, will discard the rest
 const r = crypto.getRandomValues(new Uint8Array(18));
@@ -74,7 +75,6 @@ const c = new UUID(r);
 assert.equal(c.byteLength, 16);
 assert.equal(c.buffer.byteLength, 16);
 
-/*
 const cb = new Uint8Array(c.buffer);
 assert.equal(cb.length, 16);
 assert.equal(cb[16], undefined);
@@ -100,5 +100,4 @@ assert.equal(hb[0], 0x95);
 assert.equal(hb[1], 0xff);
 assert.equal(hb[2], 0xfb);
 assert.equal(hb[3], 0x8c);
-*/
 
