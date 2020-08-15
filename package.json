@@ -2,7 +2,7 @@
   "name": "uuid-class",
   "version": "0.8.0",
   "description": "A minimal UUID class for JavaScript",
-  "main": "index.js",
+  "main": "cjs/index.js",
   "module": "index.js",
   "type": "module",
   "files": [
@@ -12,6 +12,12 @@
     "cjs",
     "module"
   ],
+  "exports": {
+    ".": {
+      "import": "./index.js",
+      "require": "./cjs/index.cjs"
+    }
+  },
   "scripts": {
     "clean": "rm -rf mjs cjs module index*",
     "pretest": "npm run build:mjs",
@@ -20,7 +26,7 @@
     "sed": "sed -i '' -E \"s/$npm_package_name-[0-9]+\\.[0-9]+\\.[0-9]+/$npm_package_name-$npm_package_version/g\" docs/_config.yml",
     "build": "(npm run build:mjs & npm run build:cjs & wait) && npm run build:dist",
     "build:mjs": "tsc -d -p tsconfig.json",
-    "build:cjs": "tsc -d -p tsconfig.cjs.json",
+    "build:cjs": "tsc -d -p tsconfig.cjs.json && sed -i '' -E 's/\\.js/.cjs/g' cjs/*.js && for f in cjs/*.js; do mv \"$f\" \"${f%.js}.cjs\"; done",
     "build:dist": "rollup -c",
     "changelog:head": "echo \"\\n\\n## v$npm_package_version\" | bin/after.js 'CHANGELOG' docs/CHANGELOG.md",
     "changelog:list": "git log v$npm_package_version..HEAD --pretty=format:'- %s' --reverse | bin/after.js 'CHANGELOG' docs/CHANGELOG.md",
