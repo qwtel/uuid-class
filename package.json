@@ -6,9 +6,9 @@
   "module": "index.js",
   "type": "module",
   "files": [
-    "index.js",
-    "index.d.ts",
-    "*.map",
+    "index*",
+    "tsconfig*.json",
+    "src",
     "cjs",
     "module"
   ],
