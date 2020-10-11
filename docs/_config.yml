@@ -57,7 +57,7 @@ author:
   social:
     github:            https://github.com/qwtel/uuid-class
     npm:               https://www.npmjs.com/package/uuid-class
-    download:          https://registry.npmjs.org/uuid-class/-/uuid-class-0.9.0.tgz
+    download:          https://registry.npmjs.org/uuid-class/-/uuid-class-0.10.0.tgz
 
 
 # Add links to the sidebar.

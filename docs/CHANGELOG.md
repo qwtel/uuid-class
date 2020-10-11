@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v0.10.0
+- Publish on push tag
+- Add src to package
+
 ## v0.9.0
 - Remove github packages
 - Revert bin script
