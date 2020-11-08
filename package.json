@@ -18,6 +18,7 @@
       "require": "./cjs/index.cjs"
     }
   },
+  "types": "./index.d.ts",
   "scripts": {
     "clean": "rm -rf mjs cjs module index*",
     "pretest": "npm run build:mjs",
