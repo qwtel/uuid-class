@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## v0.10.2
+- Try gh packges
+
 ## v0.10.1
 - Add types
 - Update bin
