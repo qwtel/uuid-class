@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v0.10.1
+- Add types
+- Update bin
+
 ## v0.10.0
 - Publish on push tag
 - Add src to package
