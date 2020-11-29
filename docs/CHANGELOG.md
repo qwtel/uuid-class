@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v0.10.3
+- Revert "Try gh packges"
+- Update deps
+
 ## v0.10.2
 - Try gh packges
 
