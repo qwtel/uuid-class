@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## v0.11.0
+- Use typed array utils
+
 ## v0.10.3
 - Revert "Try gh packges"
 - Update deps
