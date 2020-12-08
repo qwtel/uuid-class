@@ -1,3 +1,5 @@
+import { bufferSourceToUint8Array, bytesToHexArray, concatUint8Arrays, hexStringToBytes } from 'typed-array-utils';
+
 // Better inspection for node and deno.
 const nodeInspect = Symbol.for('nodejs.util.inspect.custom');
 
@@ -7,32 +9,14 @@ const denoInspect: symbol = typeof Deno !== 'undefined'
   ? 'symbols' in Deno ? Deno.symbols.customInspect : Deno.customInspect
   : Symbol();
 
-const byteToHex = (byte: number) => byte.toString(16).padStart(2, '0');
-const hexToByte = (hexOctet: string) => parseInt(hexOctet, 16);
-
-const _hexStringToBytes = (hexString: string) => hexString.match(/[0-9A-Fa-f]{1,2}/g).map(hexToByte);
-
-function _bytesToHexArray(uint8Array: Uint8Array) {
-  const hexArray = new Array(16);
-  for (let i = 0; i < 16; i++) { hexArray[i] = byteToHex(uint8Array[i]) }
-  return hexArray;
-}
 
 function _bytesToUUIDString(uint8Array: Uint8Array) {
-  const hexArray = _bytesToHexArray(uint8Array);
-  for (const i of [4, 7, 10, 13]) hexArray.splice(i, 0, '-');
+  const hexArray = bytesToHexArray(uint8Array);
+  hexArray.splice(4, 0, '-')
+  hexArray.splice(7, 0, '-')
+  hexArray.splice(10, 0, '-')
+  hexArray.splice(13, 0, '-')
   return hexArray.join('');
-}
-
-function _concatUint8Arrays(...u8s: Uint8Array[]) {
-  const size = u8s.reduce((size, u8) => size + u8.length, 0);
-  const res = new Uint8Array(size);
-  let i = 0;
-  for (const u8 of u8s) {
-    res.set(u8, i);
-    i += u8.length;
-  }
-  return res.buffer;
 }
 
 function _v4() {
@@ -46,28 +30,26 @@ function _v4() {
 }
 
 function _fromString(str: string) {
-  const hex = str.replace(/[^0-9A-Fa-f]/g, '').slice(0, 32);
+  const hex = str.replace(/[^0-9a-f]/gi, '').slice(0, 32);
   if (hex.length < 32) throw Error('UUID too short');
-  return _hexStringToBytes(hex);
+  return hexStringToBytes(hex);
 }
 
 function stringToBytes(str: string) {
   str = unescape(encodeURIComponent(str)); // UTF8 escape
-  return new TextEncoder().encode(str).buffer;
+  return new TextEncoder().encode(str);
 }
 
 async function _v5(value: string | BufferSource, namespace: string | UUID) {
   const valueBytes = typeof value === 'string'
-    ? new Uint8Array(stringToBytes(value))
-    : value instanceof ArrayBuffer
-      ? new Uint8Array(value)
-      : new Uint8Array(value.buffer, value.byteOffset, value.byteLength);
+    ? stringToBytes(value)
+    : bufferSourceToUint8Array(value);
 
   const namespaceUUID = typeof namespace === 'string'
     ? new UUID(namespace)
     : namespace
 
-  const hashBytes = await crypto.subtle.digest('SHA-1', _concatUint8Arrays(namespaceUUID, valueBytes));
+  const hashBytes = await crypto.subtle.digest('SHA-1', concatUint8Arrays(namespaceUUID, valueBytes));
 
   hashBytes[6] = (hashBytes[6] & 0x0f) | 0x50; // version
   hashBytes[8] = (hashBytes[8] & 0x3f) | 0x80;

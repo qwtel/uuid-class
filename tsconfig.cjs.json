@@ -2,10 +2,9 @@
   "compilerOptions": {
     "lib": ["ES2018", "DOM"],
     "target": "ES5",
-    "module": "CommonJS",
     "outDir": "cjs",
-    "allowJs": true,
-    "checkJs": true,
+    "module": "CommonJS",
+    "moduleResolution": "node",
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
@@ -14,4 +13,5 @@
   "include": [
     "src/index.ts"
   ],
+  "exclude": [],
 }

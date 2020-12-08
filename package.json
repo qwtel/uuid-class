@@ -63,5 +63,8 @@
     "uint8array",
     "typedarray",
     "binary"
-  ]
+  ],
+  "dependencies": {
+    "typed-array-utils": "^0.1.0"
+  }
 }
