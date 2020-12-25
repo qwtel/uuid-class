@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## v0.11.1
+- Fix module
+
 ## v0.11.0
 - Use typed array utils
 
