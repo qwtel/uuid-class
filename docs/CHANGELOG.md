@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v0.12.0
+- Use strict
+- Remove inspection from base class
+
 ## v0.11.1
 - Fix module
 
