@@ -1,15 +1,5 @@
 import { bufferSourceToUint8Array, bytesToHexArray, concatUint8Arrays, hexStringToBytes } from 'typed-array-utils';
 
-// Better inspection for node and deno.
-const nodeInspect = Symbol.for('nodejs.util.inspect.custom');
-
-// @ts-ignore
-const denoInspect: symbol = typeof Deno !== 'undefined'
-  // @ts-ignore
-  ? 'symbols' in Deno ? Deno.symbols.customInspect : Deno.customInspect
-  : Symbol();
-
-
 function _bytesToUUIDString(uint8Array: Uint8Array) {
   const hexArray = bytesToHexArray(uint8Array);
   hexArray.splice(4, 0, '-');
@@ -150,12 +140,19 @@ export class UUID extends Uint8Array {
 
   // We don't operations like `map`, `subarray`, etc. to preserve the UUID class status
   static get [Symbol.species]() { return Uint8Array }
-
-  [nodeInspect]() {
-    return `UUID [ ${this.uuid} ]`;
-  }
-
-  [denoInspect]() {
-    return `UUID [ ${this.uuid} ]`;
-  }
 }
+
+// Better inspection for node and deno:
+const nodeInspect = Symbol.for('nodejs.util.inspect.custom');
+
+// @ts-ignore
+const denoInspect: symbol = typeof Deno !== 'undefined'
+  // @ts-ignore
+  ? 'symbols' in Deno ? Deno.symbols.customInspect : Deno.customInspect
+  : Symbol();
+
+// @ts-ignore
+UUID.prototype[nodeInspect] = function () { return `UUID [ ${this.uuid} ]` }
+
+// @ts-ignore
+UUID.prototype[denoInspect] = function () { return `UUID [ ${this.uuid} ]` }
