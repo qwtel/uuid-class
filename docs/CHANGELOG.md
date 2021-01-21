@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## v0.12.1
+- Make scripts x-platform
+
 ## v0.12.0
 - Use strict
 - Remove inspection from base class
