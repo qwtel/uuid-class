@@ -20,14 +20,14 @@
   },
   "types": "./index.d.ts",
   "scripts": {
-    "clean": "rm -rf mjs cjs module index*",
+    "clean": "shx rm -rf mjs cjs module index*",
     "pretest": "npm run build:mjs",
     "test": "node test/test.js",
-    "copy": "cp docs/README.md README.md && cp docs/LICENSE.md LICENSE.md",
-    "sed": "sed -i '' -E \"s/$npm_package_name-[0-9]+\\.[0-9]+\\.[0-9]+/$npm_package_name-$npm_package_version/g\" docs/_config.yml",
+    "copy": "shx cp docs/README.md README.md && shx cp docs/LICENSE.md LICENSE.md",
+    "sed": "shx sed -i \"s/$npm_package_name-[0-9]+\\.[0-9]+\\.[0-9]+/$npm_package_name-$npm_package_version/\" docs/_config.yml > /dev/null",
     "build": "(npm run build:mjs & npm run build:cjs & wait) && npm run build:dist",
     "build:mjs": "tsc -d -p tsconfig.json",
-    "build:cjs": "tsc -d -p tsconfig.cjs.json && sed -i '' -E 's/\\.js/.cjs/g' cjs/*.js && for f in cjs/*.js; do mv \"$f\" \"${f%.js}.cjs\"; done",
+    "build:cjs": "tsc -d -p tsconfig.cjs.json && shx sed -i 's/\\.js/.cjs/g' cjs/*.js > /dev/null && for f in cjs/*.js; do shx mv \"$f\" \"${f%.js}.cjs\"; done",
     "build:dist": "rollup -c",
     "changelog:head": "echo \"\\n\\n## v$npm_package_version\" | bin/after.js 'CHANGELOG' docs/CHANGELOG.md",
     "changelog:list": "git log v$npm_package_version..HEAD --pretty=format:'- %s' --reverse | bin/after.js 'CHANGELOG' docs/CHANGELOG.md",
@@ -42,6 +42,7 @@
     "rollup": "^2.34.0",
     "rollup-plugin-node-resolve": "^5.2.0",
     "rollup-plugin-terser": "^7.0.2",
+    "shx": "^0.3.3",
     "typescript": "^4.1.2"
   },
   "directories": {
