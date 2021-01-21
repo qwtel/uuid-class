@@ -67,6 +67,6 @@
     "binary"
   ],
   "dependencies": {
-    "typed-array-utils": "^0.2.1"
+    "typed-array-utils": "^0.2.2"
   }
 }
