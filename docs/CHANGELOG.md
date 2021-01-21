@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## v0.12.2
+- Update deps
+
 ## v0.12.1
 - Make scripts x-platform
 
