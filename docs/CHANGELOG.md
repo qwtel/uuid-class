@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## v0.12.3
+- Target es2015
+
 ## v0.12.2
 - Update deps
 

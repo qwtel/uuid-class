@@ -1,6 +1,6 @@
 {
   "name": "uuid-class",
-  "version": "0.12.2",
+  "version": "0.12.3",
   "description": "A minimal UUID class for JavaScript",
   "main": "cjs/index.js",
   "module": "index.js",
