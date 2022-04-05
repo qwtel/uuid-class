@@ -2,45 +2,9 @@
 
 // ex. scripts/build_npm.ts
 import { basename, extname } from "https://deno.land/std@0.133.0/path/mod.ts";
-import { Marked } from "https://deno.land/x/markdown@v2.0.0/mod.ts"
-
-import { DOMParser } from "https://deno.land/x/deno_dom/deno-dom-wasm.ts";
 import { build, emptyDir } from "https://deno.land/x/dnt/mod.ts";
 
-export async function latestVersion() {
-  return new TextDecoder().decode(
-    await Deno.run({ cmd: ['git', 'tag', '--sort=committerdate'], stdout: 'piped' }).output()
-  ).trim().split('\n').at(-1)?.replace(/^v/, '') ?? '0.0.1'
-} 
-
-export async function copyMdFiles() {
-  for await (const { isFile, name } of Deno.readDir('.')) {
-    if (isFile && extname(name) === '.md') {
-      console.log(`[^dnt] Copying ${name}...`)
-      await Deno.copyFile(name, `npm/${name}`);
-    }
-  }
-}
-
-export async function getDescription() {
-  console.log('[^dnt] Parsing README.md...')
-  const markdown = new TextDecoder().decode(await Deno.readFile('./README.md'))
-  const markup = Marked.parse(markdown).content;
-  const document = new DOMParser().parseFromString(markup, 'text/html')
-  const description = document?.documentElement?.querySelector('p')?.textContent?.replace(/\s+/g, ' ');
-  if (description) {
-    console.log('[^dnt] Parsing README.md OK.')
-    return description.trim()
-  }
-  throw Error('Couldn\'t parse description from README file')
-}
-
-export async function getGitAuthor() {
-  const name = new TextDecoder().decode(await Deno.run({ cmd: ['git', 'config', '--get', 'user.name'], stdout: 'piped' }).output()).trim()
-  const email = new TextDecoder().decode(await Deno.run({ cmd: ['git', 'config', '--get', 'user.email'], stdout: 'piped' }).output()).trim()
-  const homepage = new TextDecoder().decode(await Deno.run({ cmd: ['git', 'config', '--get', 'user.homepage'], stdout: 'piped' }).output()).trim()
-  return `${name} <${email}> ${homepage ? `(${homepage})` : ''}`.trim()
-}
+import { latestVersion, copyMdFiles, getDescription } from 'https://gist.githubusercontent.com/qwtel/ecf0c3ba7069a127b3d144afc06952f5/raw/latest-version.ts'
 
 const gfc = new Map<string, Promise<any>>()
 
@@ -94,7 +58,7 @@ await build({
   packageManager: 'pnpm',
   compilerOptions: {
     sourceMap: true,
-    target: 'ES2021'
+    target: 'ES2019'
   },
   mappings: {
     "https://ghuc.cc/qwtel/typed-array-utils/index.ts": {
