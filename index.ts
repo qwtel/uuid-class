@@ -48,7 +48,7 @@ async function _v5(value: string | BufferSource, namespace: string | UUID) {
   hashBytes[6] = (hashBytes[6] & 0x0f) | 0x50; // version
   hashBytes[8] = (hashBytes[8] & 0x3f) | 0x80;
 
-  return hashBytes.buffer.slice(0, 16);
+  return hashBytes.subarray(0, 16);
 }
 
 /**
@@ -69,7 +69,7 @@ export class UUID extends Uint8Array {
    * 
    * __Note that `crypto.getRandomValues` needs to be available in the global JS object!__
    */
-  static v4() {
+  static v4(): UUID {
     return new UUID(_v4());
   }
 
@@ -81,7 +81,7 @@ export class UUID extends Uint8Array {
    * @param value 
    * @param namespace 
    */
-  static async v5(value: string | BufferSource, namespace: string | UUID) {
+  static async v5(value: string | BufferSource, namespace: string | UUID): Promise<UUID> {
     return new UUID(await _v5(value, namespace));
   }
 
@@ -107,13 +107,13 @@ export class UUID extends Uint8Array {
     } else if (typeof value === 'string') {
       super(_fromString(value));
     } else if (value instanceof UUID) {
-      super(value.buffer.slice(0));
+      super(value.buffer);
     } else {
       const u8 = value instanceof ArrayBuffer || value instanceof SharedArrayBuffer 
         ? new Uint8Array(value, byteOffset ?? 0, 16)
         : 'length' in value ? new Uint8Array(value) : new Uint8Array(value);
       if (u8.length < 16) throw Error('UUID too short');
-      super(u8.buffer.slice(0, 16));
+      super(u8.subarray(0, 16));
     }
   }
 
@@ -121,7 +121,7 @@ export class UUID extends Uint8Array {
    * Quick access to the string representation for easier comparison.
    * @example if (myUUID.id === otherUUID.id) { ... }
    */
-  get id() {
+  get id(): string {
     return _bytesToUUIDString(this);
   }
 
@@ -129,15 +129,15 @@ export class UUID extends Uint8Array {
    * Quick access to the UUID string representation for easier comparison.
    * @example if (myUUID.uuid === otherUUID.uuid) { ... }
    */
-  get uuid() {
+  get uuid(): string {
     return _bytesToUUIDString(this);
   }
 
-  toString() {
+  toString(): string {
     return _bytesToUUIDString(this);
   }
 
-  toJSON() {
+  toJSON(): string {
     return _bytesToUUIDString(this);
   }
 
